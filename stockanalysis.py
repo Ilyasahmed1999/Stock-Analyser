@@ -8,12 +8,12 @@ from datetime import datetime
 import pandas as pd
 def sql_connection():
     try:
-        con=sqlite3.connect('mydatabase0022.db') # it is used to connect to  a data base i.e mydatabase.db file
+        con=sqlite3.connect('mydatabase0025.db') # it is used to connect to  a data base i.e mydatabase.db file
         # this file is created on disk . if we want to create the db on ram then we have to use connect(:memory)
         print("connection is established...")
         return con
     except Error:
-        print("Error!")
+        print(" Sql Connection Error!")
 
 # it is used to create a table
 def sql_create_table(con,tname):
@@ -40,11 +40,14 @@ def sql_select(con,tname):
         df=pd.read_sql_query(f"select * from {tname};",con)
         print(df)
     except Error:
-        print("Error!")
+        print(" Select Error!")
 
 def getValue(con,stock):
+    
     count=0
     pvalue=0
+    cond=0
+    
     try:
         mcur=con.cursor() # it gives the cursor object that is used to execute the sqlite statemsnts    
         for i in stock:
@@ -52,32 +55,36 @@ def getValue(con,stock):
                 comname=i.find("td").find("b").text
                 pvalue=i.find_all('td')[4].text
             except Exception as e:
-                print("2")
-            mcur.execute(f"SELECT perchg from stock{count}")
-            rows=mcur.fetchall()
-            index=len(rows)-1
-            tvalue=rows[index]
-            if float(tvalue[0])-float(pvalue)>=2:
-                print(f"{comname} stock changed by 2 percentage.....")
-            else:
-                print(f"{comname} stock not changed by 2 percentage...")
-            count=count+1            
+                cond=1
+
+            if cond==0:
+                mcur.execute(f"SELECT perchg from stock{count}")
+                rows=mcur.fetchall()
+                index=len(rows)-1
+                tvalue=rows[index]
+                if float(tvalue[0])-float(pvalue)>=2:
+                    print(f"{comname} Stock Changed By 2 Percent")
+                else:
+                    print(f"{comname} Stock Remains Same")
+                count=count+1
+            cond=0            
     except Error:
-        print("Error!")
+        print(" get Value Error!")
 
 rcon=sql_connection()
 
-
-min=0 # minutes
 count=0
-check=0
+
 r=requests.get('https://www.moneycontrol.com/stocks/marketstats/indexcomp.php?optex=NSE&opttopic=indexcomp&index=9')
 soup=bs4.BeautifulSoup(r.text,"lxml")
+
 def getprice(soup,rcon,count):
-    #print(soup)
+
     check=0
+    p=0
     min=0
     stock=soup.find('table',{'class':"tbldata14 bdrtpg"}).find_all('tr')#.find_all('td')[4]
+    
     while True:    
         if min<=4:
             for i in stock:
@@ -85,10 +92,11 @@ def getprice(soup,rcon,count):
                     entities=(str(datetime.now()),i.find("td").find("b").text,i.find_all('td')[4].text)
                     if check==0:
                         sql_create_table(rcon,f"stock{count}")
+                        p=p+1
                     sql_insert(rcon,entities,f"stock{count}")
                     count=count+1;
                 except Exception as e:
-                    print("1")
+                    pass
             count=0
             time.sleep(30)
             min=min+0.5
@@ -97,9 +105,9 @@ def getprice(soup,rcon,count):
         else:
             break    
         check=check+1
-    for j in range(count):
+    
+    for j in range(p):
         sql_select(rcon,f"stock{j}")
-#while True:
-    #    print("Current price:"+str(getprice(soup)))
-        #time.sleep(30)
+
+
 getprice(soup,rcon,count)
