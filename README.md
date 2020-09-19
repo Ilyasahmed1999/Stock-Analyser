@@ -3,7 +3,7 @@ Problem Statment: Now a days most of the people are buying the stocks and they a
                   So as we know time is important .every single second counts. there are using most of their time knowing the stock price again  and again. 
 
 Solution: So we have come up with the Python Stock Analyzer Application that have  capabiity to analysis of stock and 
-          give notification if the stock changes by 2 percentag. 
+          give notification if the stock changes by 2 percentage. 
           
 Technologies Used:
 1)Python 3.7 - Programming Language 
