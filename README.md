@@ -1,4 +1,4 @@
-#Stock-Analysis
+#StockAnalysis
 
 **Problem Statment:**
 Now a days most of the people are buying the stocks and they are regularly checking the stock price  again again. 
@@ -18,7 +18,7 @@ So we have come up with the Python Stock Analyzer Application that have  capabii
 
 4)Visual Studio Code - Code Editor(IDE)
 
-**Todo: **
+**Todo:**
 
 1)To add the UI to it. I mean moving it into an Application both mobile and desktop Application 
 
