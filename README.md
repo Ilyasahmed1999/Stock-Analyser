@@ -1,4 +1,4 @@
-#StockAnalysis
+# StockAnalysis
 
 **Problem Statment:**
 Now a days most of the people are buying the stocks and they are regularly checking the stock price  again again. 
